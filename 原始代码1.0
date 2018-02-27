@@ -1,0 +1,120 @@
+package test;
+
+import java.awt.*;
+import javax.swing.*;
+import java.sql.*;
+import java.util.*;
+
+public class StuManager extends JFrame {
+	JPanel jp1=null,jp2=null;
+	JButton jb11=null,jb31=null,jb32=null,jb33=null;
+	JLabel jl11=null;
+	JTextField jtf11=null;
+	
+	JTable jt=null;
+	JScrollPane jsp=null;
+	Vector rowData=null,columnNames=null;
+	
+	Connection ct=null;
+	PreparedStatement ps=null;
+	ResultSet rs=null;
+	
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		StuManager sm=new StuManager();
+		
+		
+		
+
+	}
+	public StuManager()
+	{
+		
+		
+		
+		
+		
+		jp1=new JPanel();
+		jl11=new JLabel("用户名");
+		jtf11=new JTextField();
+		jtf11.setColumns(10);
+		jb11=new JButton("查询");
+		
+		jp1.add(jl11);
+		jp1.add(jtf11);
+		jp1.add(jb11);
+		jp2=new JPanel();
+		jb31=new JButton("添加");
+		jb32=new JButton("修改");
+		jb33=new JButton("删除");
+		jp2.add(jb31);
+		jp2.add(jb32);
+		jp2.add(jb33);
+		
+		
+		
+		
+		
+		
+		
+		String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=mysql;user=java;password=123456789";
+	    columnNames=new Vector();
+	    columnNames.add("学号");
+	    columnNames.add("姓名");
+	    columnNames.add("性别");
+	    columnNames.add("年龄");
+	    columnNames.add("籍贯");
+	    columnNames.add("系别");
+	    rowData=new Vector();
+	    try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			ct=DriverManager.getConnection(connectionUrl);
+			
+			ps=ct.prepareStatement("select * from StuManager");
+			rs=ps.executeQuery();
+			while(rs.next())
+			{
+				Vector row=new Vector();
+				row.add(rs.getString(1));
+				row.add(rs.getString(2));
+				row.add(rs.getString(3));
+				row.add(rs.getInt(4));
+				row.add(rs.getString(5));
+				row.add(rs.getString(6));
+				rowData.add(row);
+				
+			}
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				if(rs!=null) rs.close();
+				if(ps!=null) ps.close();
+				if(ct!=null) ct.close();
+			}catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			
+		}
+	    jt=new JTable(rowData,columnNames);
+	    jsp=new JScrollPane(jt);
+	    
+	    this.add(jsp);
+	    this.add(jp1,"North");
+	    this.add(jp2,"South");
+	    
+	   
+	    this.setSize(400,300);
+	    this.setTitle("学生管理系统");
+	    this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+	    this.setVisible(true);
+	    
+	}
+
+}
